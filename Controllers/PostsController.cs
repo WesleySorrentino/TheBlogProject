@@ -88,14 +88,14 @@ namespace TheBlogProject.Controllers
                 .Include(p => p.Tags)
                 .Include(p => p.Comments)
                 .ThenInclude(c => c.BlogUser)
-                .FirstOrDefaultAsync(m => m.Slug == slug);
-
-            ViewData["Title"] = $"{post.Title}";
+                .FirstOrDefaultAsync(m => m.Slug == slug);            
 
             if (post == null)
             {
                 return NotFound();
             }
+
+            ViewData["Title"] = $"{post.Title}";
 
             ViewData["HeaderImage"] = _imageService.DecodeImage(post.ImageData, post.ContentType);
             ViewData["MainText"] = post.Title;
