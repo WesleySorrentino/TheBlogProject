@@ -1,5 +1,268 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@using TheBlogProject.Services
+@using Microsoft.AspNetCore.Identity
+@using TheBlogProject.Enums
+@model TheBlogProject.Models.Post
+
+@inject IImageService imageService
+@inject UserManager<BlogUser> userManager
+
+<!-- Post Content-->
+        <article class="mb-4">
+            <div class="container px-4 px-lg-5">
+                <div class="row gx-4 gx-lg-5 justify-content-center">
+                    <div class="col-sm-12 col-md-10 col-lg-8 col-xl-7">
+                        @Html.Raw(@Model.Content)
+                    </div>
+                    <div class="col-lg-3 col-sm-12 m-1 text-center border border-dark h-50">
+                        <div class="row">
+                            <div class="col text-center font-weight-bold h3">
+                                Custom Post Tags
+                            </div>
+                            <hr />
+                        </div>
+                        <div class="row">
+                            
+                        @foreach(var tag in Model.Tags)
+                        {
+                            <div class="col-6">
+                                <form asp-action="SearchIndex" class="m-1" id="tags">
+                                    <input hidden type="text" name="SearchTerm" class="form-control" value="@tag.Text.ToLower()">
+                                    <button type="submit" class="btn btn-warning btn-outline-dark">#@tag.Text</button>
+                                </form>
+                            </div>
+                        }   
+                            
+                        </div>
+                            </div>
+                        </div>
+                    </div>
+        </article>      
+
+<!---Display Comments-->
+<hr />
+<div class=" m-2 p-2">
+
+    @if(User.Identity.IsAuthenticated)
+    {
+        <form asp-action="Create" asp-controller="Comments" method="post">
+            @Html.Hidden("PostId", Model.Id)
+            @Html.Hidden("Slug", Model.Slug)
+            
+            <div class="form-group">                
+                <label class="h2 custom-control-label font-weight-bolder">Add Comment</label>
+                <textarea name="body" class="form-control" rows="10" id="commentBox"></textarea>                             
+
+            </div>
+            
+            <button class="btn-sm btn-dark btn-block" type="submit" id="commentSub">Submit</button>
+        </form>
+    }
+    else
+    {
+        <a class="btn btn-block btn-dark" asp-area="Identity" asp-page="/Account/Login" asp-route-ReturnUrl="~/BlogPosts/posts/@Model.Slug">Log in to add comments</a>
+    }
+</div>
+
+<hr />
+
+<p id="commentSection" class="btn btn-sm btn-dark w-100">@Model.Comments.Count Comment(s)</p>
 @{
+    var counter = 0;
+}
+@foreach(var comment in Model.Comments.OrderByDescending(c => c.Created))
+{
+    <div class="media media-border p-2 mb-2 m-2 bg-light">
+        <img class="mr-3 mt-3 rounded-circle" style="width:60px;" src="@imageService.DecodeImage(comment.BlogUser.ImageData, comment.BlogUser.ContentType)">
+        <div class="media-body">
+            <h4>@comment.BlogUser.FullName</h4>
+                @****************************************************************
+                SECTION 1: POST ON OR UPDATED ON               
+                *****************************************************************@
+                @if(comment.Deleted is not null)
+                {
+                    <span class="small">                                                       
+                        <span class="font-weight-bolder">Deleted</span> : @comment.Deleted?.ToString("MMM dd, yyyy")
+                    </span>                    
+                }
+                else if(comment.Moderated is not null)
+                {
+                    <span class="small">
+                        <span class="font-weight-bolder">
+                            Moderated <span class="text-danger font-italic">(@comment.ModerationType.ToString().ToLower())</span>                   
+                        </span>                       
+                        : @comment.Moderated?.ToString("MMM dd, yyyy")                                                           
+                    </span>                   
+                 }
+                else if(comment.Updated is not null)
+                {
+                    <span class="small">
+                        <span class="font-weight-bolder">Updated </span> : @comment.Updated?.ToString("MMM dd, yyyy")
+                    </span>        
+                }
+                else
+                {
+                    <span class="small">
+                        <span class="font-weight-bolder">Created </span> : @comment.Created.ToString("MMM dd, yyyy")
+                    </span>                      
+                }                                             
+
+                @*****************************************************************
+                SECTION 2: HOW DO WE COMPOSE THE BODY                       
+                *****************************************************************@     
+                @*****************************************************************
+                SECTION 2A: Render pre text                       
+                *****************************************************************@                     
+                <br />
+                @if(comment.Deleted is not null)
+                {
+                    <span class="small font-italic">The comment posted on @comment.Created.ToString("MMM dd, yyyy") by @comment.BlogUser.FullName was deleted by the Moderator...</span>
+                }
+                else if(comment.Moderated is not null)
+                {
+                    <span class="small font-italic">The comment posted on @comment.Created.ToString("MMM dd, yyyy") by @comment.BlogUser.FullName has been Moderated...</span>                      
+                }
+
+                <hr />
+
+                 @*****************************************************************
+                SECTION 2B: Render main body                       
+                *****************************************************************@                      
+                @if(string.IsNullOrEmpty(comment.Body))
+                {
+                    <span class="small font-italic">Comment not available...</span>
+                }
+                else if(comment.Moderated is not null)
+                {
+                    @comment.ModeratedBody
+                }
+                else if(comment.Deleted is null)
+                {
+                    @comment.Body
+                }
+
+
+                @****************************************************************
+                    SECTION 3: CAN WE RENDER THE EDIT BUTTON           
+                *****************************************************************@
+                @if (comment.Moderated is null && comment.Deleted is null && comment.BlogUserId == userManager.GetUserId(User))
+                {
+                    <hr>
+                    <button data-bs-toggle="modal" data-bs-target="@($"#editModal{counter}")" class="btn-sm btn-dark float-right font-weight-bold">EDIT</button>
+                }
+  
+                @****************************************************************
+                SECTION 4: CAN WE RENDER THE MODERATE AND DELETE BUTTONS              
+                *****************************************************************@
+                @if (User.IsInRole(BlogRole.Moderator.ToString()) && comment.Deleted is null)
+                {
+                    <hr>
+                    <div class="row">                          
+                        <div class="col-2">
+                            <button  class="btn-sm btn-dark font-weight-bold btn-block" data-toggle="modal" data-target="#moderate">MODERATE</button>                                                   
+                        </div>
+                            <div class="col-2">
+                            <form asp-action="Delete" asp-controller="Comments">
+                                @Html.Hidden("CommentId", comment.Id)
+                                @Html.Hidden("Slug", comment.Post.Slug)
+                                <button  class="btn-sm btn-dark font-weight-bold btn-block">DELETE</button>
+                            </form>
+                        </div>
+                    </div>                  
+                }                  
+
+            @if(User.IsInRole(BlogRole.Moderator.ToString()) || User.IsInRole(BlogRole.Administrator.ToString()) && comment.Deleted is null)
+            {
+                <hr />
+                <div class="row">
+                    <div class="col-2">
+                        <button class="btn-sm btn-dark font-weight-bold btn-block" data-bs-toggle="modal" data-bs-target="@($"#moderateModal{counter}")">Moderate</button>
+                    </div>
+                    <div class="col-2">
+                        <form asp-action="Delete" asp-controller="Comments">
+                            @Html.Hidden("Id",comment.Id)
+                            @Html.Hidden("Slug",comment.Post.Slug)
+                            <button type="submit" class="btn-sm btn-danger font-weight-bold btn-block">Delete</button>
+                        </form>
+                    </div>
+                </div>
+
+            }
+        </div>
+    </div>
+
+    <div class="modal" id="@($"editModal{counter}")">
+        <div class="modal-dialog">
+
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Editing Comment...</h4>
+                </div>
+
+                <div class="modal-body">
+                    <form asp-action="Edit" asp-controller="Comments" method="post">
+                        @Html.Hidden("Id",comment.Id)
+
+                        <div class="form-group">
+                            <textarea name="Body" class="form-control" required>@comment.Body</textarea>
+
+                            <button class="btn-sm btn-dark border-success font-weight-bold" type="submit">Submit</button>
+                        </div>
+                    </form>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn-sm btn-dark font-weight-bold" data-bs-dismiss="modal">Close</button>
+                    </div>   
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="@($"moderateModal{counter}")">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Moderating Comment...</h4>
+                </div>
+
+                <div class="modal-body">
+
+                    <form asp-action="Moderate" asp-controller="Comments" method="post">
+                        @Html.Hidden("Id", comment.Id)
+                        @Html.Hidden("Body", comment.Body)
+
+                        <div class="form-group">
+                            <label class="control-label">Original Comment</label>
+                            <textarea disabled class="form-control" style="resize:none;">@comment.Body</textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label">Moderated Comment</label>
+                            <textarea required name="ModeratedBody" class="form-control">@comment.ModeratedBody</textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label">Reason for Moderation</label>
+                            <select class="form-control" asp-for="@comment.ModerationType" name="ModerationType" asp-items="Html.GetEnumSelectList<ModerationType>()"></select>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col">
+                                    <button class="btn-sm btn-block btn-dark border-success font-weight-bold" type="submit">Submit</button>
+                                </div>
+                                <div class="col">
+                                    <button class="btn-sm btn-block btn-dark border-success font-weight-bold" data-bs-dismiss="modal">Close</button>
+                                </div>
+                            </div>
+                        </div>
+
+                    </form>
+
+                </div>
+
+
+            </div>
+        </div>
+    </div>         
+    counter++;
 }

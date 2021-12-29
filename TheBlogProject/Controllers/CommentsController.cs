@@ -74,7 +74,7 @@ namespace TheBlogProject.Controllers
                 try
                 {
                     newComment.Body = comment.Body;
-                    newComment.Updated = DateTime.Now;
+                    newComment.Updated = DateTime.UtcNow;
 
                     await _context.SaveChangesAsync();
                 }

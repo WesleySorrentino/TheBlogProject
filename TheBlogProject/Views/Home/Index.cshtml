@@ -14,21 +14,20 @@
 }
 
 
-
 <div class="container ">
     <div class="row gx-4 gx-lg-5">
         @foreach(var blog in Model)
             {
                 <div class="col-sm-12 col-md-6 col-lg-4 mt-2">
             <!-- Post preview-->
-                @if(blog.BlogUserId is null)
+                @if(blog.BlogUser is null)
                 {
-                    <div>
-                        <h1>Home page is not rendered fully but if you see this it worked!</h1>
+                    <div class="col-12">
+                        <h1>There is an issue with one or more blogs! Please contact an Admin!</h1>
                     </div>
-                }
-
-               <div class="post-preview">
+                } else
+                {
+                    <div class="post-preview">
                     <img class="card-img-top" id="img" height="500" src="@imageService.DecodeImage(blog.ImageData, blog.ContentType)">
                 <a asp-controller="Posts" asp-action="BlogPostIndex" asp-route-id="@blog.Id">
                     <h2 class="post-title">@blog.Name</h2>
@@ -60,6 +59,10 @@
                     </div>
                 </div>
             }
+
+                }
+
+               
                 </div>
                 
             }       

@@ -39,6 +39,11 @@ builder.Services.AddScoped<ISlugService, BasicSlugService>();
 
 var app = builder.Build();
 
+//Add DataService
+var dataService = app.Services.CreateScope().ServiceProvider.GetRequiredService<DataService>();
+//Seeds any data into database if there isnt any
+await dataService.ManageDataAsync();
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {

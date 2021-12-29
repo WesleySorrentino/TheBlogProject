@@ -24,11 +24,11 @@ namespace TheBlogProject.Controllers
         }
 
         // GET: Blogs
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> ListBlogs()
         {
             var applicationDbContext = _context.Blogs.Include(b => b.BlogUser);
             return View(await applicationDbContext.ToListAsync());
-        }
+        }     
 
         // GET: Blogs/Details/5
         public async Task<IActionResult> Details(int? id)

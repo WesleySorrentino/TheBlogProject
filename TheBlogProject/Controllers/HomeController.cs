@@ -32,7 +32,7 @@ namespace TheBlogProject.Controllers
                 .OrderByDescending(b => b.Created)
                 .ToPagedListAsync(pageNumber, pageSize);
 
-            ViewData["HeaderImage"] = "/assets/img/home-bg.jpg";
+            ViewData["HeaderImage"] = "/img/home-bg.jpg";
             ViewData["MainText"] = "Home Page";
 
             return View(await blogs);
@@ -40,7 +40,7 @@ namespace TheBlogProject.Controllers
 
         public IActionResult About()
         {
-            ViewData["HeaderImage"] = "/assets/img/about-bg.jpg";
+            ViewData["HeaderImage"] = "/img/about-bg.jpg";
             ViewData["MainText"] = "About Page";
             ViewData["Title"] = "About Page";
 
