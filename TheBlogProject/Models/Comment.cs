@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using TheBlogProject.Enums;
 
 namespace TheBlogProject.Models
 {
