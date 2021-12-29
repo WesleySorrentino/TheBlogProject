@@ -1,8 +1,167 @@
-﻿@{
+﻿@using TheBlogProject.Models
+@using TheBlogProject.Services
+@using TheBlogProject.Enums
+@using X.PagedList
+@using X.PagedList.Mvc.Core
+@using X.PagedList.Web.Common
+
+@model IPagedList<Blog>
+
+@inject IImageService imageService
+
+@{
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+
+
+<div class="container ">
+    <div class="row gx-4 gx-lg-5">
+        @foreach(var blog in Model)
+            {
+                <div class="col-sm-12 col-md-6 col-lg-4 mt-2">
+            <!-- Post preview-->
+                @if(blog.BlogUserId is null)
+                {
+                    <div>
+                        <h1>Home page is not rendered fully but if you see this it worked!</h1>
+                    </div>
+                }
+
+               <div class="post-preview">
+                    <img class="card-img-top" id="img" height="500" src="@imageService.DecodeImage(blog.ImageData, blog.ContentType)">
+                <a asp-controller="Posts" asp-action="BlogPostIndex" asp-route-id="@blog.Id">
+                    <h2 class="post-title">@blog.Name</h2>
+                    <h5 class="post-subtitle">@blog.Description</h5>
+                </a>
+                <p class="post-meta">
+                    Authored by
+                    <a asp-action="About" asp-fragment="aboutAuthor">@blog.BlogUser.FullName</a>
+                    on @blog.Created.ToString("MMM dd, yyyy")
+                </p>
+            </div>
+            <hr class="my-4" />
+            <div class="text-center">
+                <a class="btn-sm btn-dark mb-2" asp-controller="Posts" asp-action="BlogPostIndex" asp-route-id="@blog.Id">Read Posts</a>
+            </div>
+            @if(User.IsInRole(BlogRole.Administrator.ToString()))
+            {
+
+                <div class="row">
+                    <div class="col">
+                        <div class="text-center">
+                    <a class="btn-sm btn-warning btn-xs btn-block mb-2" asp-action="Edit" asp-controller="Blogs" asp-route-id="@blog.Id">Edit Blog</a>
+                </div>
+                    </div>
+                    <div class="col">
+                        <div class="text-center">
+                    <a class="btn-sm btn-danger btn-xs btn-block mb-2" asp-action="Delete" asp-controller="Blogs" asp-route-id="@blog.Id">Delete Blog</a>
+                </div>
+                    </div>
+                </div>
+            }
+                </div>
+                
+            }       
+        
+    </div>
 </div>
+
+@*<div class="row">
+    @foreach(var blog in Model)
+    {
+        <div class="col-sm-12 col-md-6 col-lg-4 mt-2">
+
+            <div class="card border-dark">
+
+                <img class="card-img-top" src="@imageService.DecodeImage(blog.ImageData, blog.ContentType)">
+                
+                <div class="card-body text-center">
+
+                    <div class="bg-warning">
+                        <hr class="card-hr">
+                        <h5 class="card-title">@blog.Name</h5>
+                        <hr class="card-hr">
+                    </div>
+
+                    <div>
+                        <p class="card-text wstooltip" data-bs-toggle="tooltip" data-placement="top" title="" data-original-title="@blog.Description">
+                            @blog.Description
+                        </p>
+                    </div>
+
+                    <br>
+
+                    <div class="text-center">
+                        <a class="btn-sm btn-dark mb-2" asp-controller="Posts" asp-action="BlogPostIndex" asp-route-id="@blog.Id">Read Posts</a>
+                    </div>
+
+                    @if(User.IsInRole(BlogRole.Administrator.ToString()))
+                    {
+
+                        <div class="row">
+                            <div class="col">
+                                <div class="text-center">
+                            <a class="btn-sm btn-dark btn-xs btn-block mb-2" asp-action="Create" asp-controller="Posts" asp-route-id="@blog.Id">Create Post</a>
+                        </div>
+                            </div>
+                            <div class="col">
+                                <div class="text-center">
+                            <a class="btn-sm btn-dark btn-xs btn-block mb-2" asp-action="Create" asp-controller="Blogs" asp-route-id="@blog.Id">Create blog</a>
+                        </div>
+                            </div>
+                            <div class="col">
+                                <div class="text-center">
+                            <a class="btn-sm btn-warning btn-xs btn-block mb-2" asp-action="Edit" asp-controller="Blogs" asp-route-id="@blog.Id">Edit Blog</a>
+                        </div>
+                            </div>
+                            <div class="col">
+                                <div class="text-center">
+                            <a class="btn-sm btn-danger btn-xs btn-block mb-2" asp-action="Delete" asp-controller="Blogs" asp-route-id="@blog.Id">Delete Blog</a>
+                        </div>
+                            </div>
+                        </div>
+                    }
+
+                </div>
+            </div>
+        </div>
+    }
+</div>*@
+
+
+<!--Add Paging controls-->
+<div class="row mt-5">
+    <div class="col h3">
+        Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
+    </div>
+</div>
+
+<div class="row">
+    <div class="col">
+        @Html.PagedListPager(Model, page => Url.Action("Index", new {page = page} ),
+            new PagedListRenderOptions 
+            {
+                LiElementClasses = new string[] {"page-item"},
+                PageClasses = new string[] {"page-link"}
+            })
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        var swalMsg = '@TempData["SweetAlert"]';
+
+        if(swalMsg != "") {
+            Swal.fire({
+                icon: 'sucess',
+                title: swalMsg,
+                timer: 2500
+            });
+        }
+
+        //$(document).ready(function () {
+        //    $("p").tooltip();
+        //});
+    </script>
+}
