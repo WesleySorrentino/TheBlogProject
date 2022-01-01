@@ -39,12 +39,12 @@ builder.Services.AddAuthentication().AddGoogle(googleOptions =>
     });
 
 //Add Facebook Authentication
-builder.Services.AddAuthentication().AddFacebook(facebookOptions =>
-    {
-        facebookOptions.AppId = builder.Configuration["Authentication:Facebook:AppId"];
-        facebookOptions.AppSecret = builder.Configuration["Authentication:Facebook:AppSecret"];
-        facebookOptions.AccessDeniedPath = "/AccessDeniedPathInfo";
-    });
+//builder.Services.AddAuthentication().AddFacebook(facebookOptions =>
+//    {
+//        facebookOptions.AppId = builder.Configuration["Authentication:Facebook:AppId"];
+//        facebookOptions.AppSecret = builder.Configuration["Authentication:Facebook:AppSecret"];
+//        facebookOptions.AccessDeniedPath = "/AccessDeniedPathInfo";
+//    });
 
 var app = builder.Build();
 
