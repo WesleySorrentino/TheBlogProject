@@ -126,7 +126,7 @@
         <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
         @await RenderSectionAsync("Scripts", required: false)
-        <script>
+        @*<script>
           window.fbAsyncInit = function() {
             FB.init({
               appId      : '{app-id}',
@@ -146,6 +146,6 @@
              js.src = "https://connect.facebook.net/en_US/sdk.js";
              fjs.parentNode.insertBefore(js, fjs);
            }(document, 'script', 'facebook-jssdk'));
-        </script>
+        </script>*@
     </body>
 </html>
