@@ -15,7 +15,8 @@
         ViewData["Title"] = "Posts";
     }
 
-<div class="row">
+<div class="container">
+    <div class="row">
 
     @if(User.IsInRole(BlogRole.Administrator.ToString()))
     {
@@ -33,8 +34,8 @@
             isAuthor = isAuthor && (post.BlogUserId == userManager.GetUserId(User));
         }
 
-        <div class="col-sm-2 col-lg-3 m-5">
-            <div class="card border-dark" style="width:25rem;">
+        <div class="col-sm-12 col-md-6 col-lg-4 mt-3">
+            <div class="card border-dark">
                 <div class="card-body text-center">
                     <img class="card-img-top" id="img" src="@imageService.DecodeImage(post.ImageData,  post.ContentType)" />
                     <div class="bg-warning">
@@ -69,6 +70,7 @@
 
         </div>        
     }
+</div>
 </div>
 
 <hr />
