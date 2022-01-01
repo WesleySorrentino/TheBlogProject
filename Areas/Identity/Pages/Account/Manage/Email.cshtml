@@ -1,7 +1,9 @@
 ﻿@page
 @model EmailModel
 @{
-    ViewData["Title"] = "Manage Email";
+    string emailText = "Manage Email";
+    ViewData["Title"] = emailText;
+    ViewData["MainText"] = emailText;
     ViewData["ActivePage"] = ManageNavPages.Email;
 }
 

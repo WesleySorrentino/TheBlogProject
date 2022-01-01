@@ -2,6 +2,7 @@
 @model IndexModel
 @{
     ViewData["Title"] = "Profile";
+    ViewData["MainText"] = "Manage Profile";
     ViewData["ActivePage"] = ManageNavPages.Index;
 }
 
@@ -23,7 +24,7 @@
 
             <div class="form-group">
                 <label asp-for="Input.Image"></label>
-                <input type="file" asp-for="Input.Image" class="form-control" />
+                <input type="file" asp-for="Input.Image" class="form-control" accept=".jpg,.png,.gif,.jpeg"/>
                 <span asp-validation-for="Input.Image" class="text-danger"></span>
             </div>
 
@@ -32,7 +33,7 @@
     </div>
 
     <div class="col-md-6">
-        <img class="img-fluid rounded-circle" width="90%" src="@Model.CurrentImage"/>
+        <img class="img-fluid rounded-circle" width="90" src="@Model.CurrentImage"/>
     </div>
 </div>
 

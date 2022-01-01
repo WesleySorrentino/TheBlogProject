@@ -1,7 +1,9 @@
 ﻿@page
 @model EnableAuthenticatorModel
 @{
-    ViewData["Title"] = "Configure authenticator app";
+    string authText = "Configure authenticator app";
+    ViewData["Title"] = authText;
+    ViewData["MainText"] = authText;
     ViewData["ActivePage"] = ManageNavPages.TwoFactorAuthentication;
 }
 
