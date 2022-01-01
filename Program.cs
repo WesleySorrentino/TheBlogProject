@@ -31,14 +31,14 @@ builder.Services.AddScoped<IImageService, BasicImageService>();
 
 builder.Services.AddScoped<ISlugService, BasicSlugService>();
 
-//Add Google Auth
+//Add Google Authentication
 builder.Services.AddAuthentication().AddGoogle(googleOptions =>
     {
         googleOptions.ClientId = builder.Configuration["Authentication:Google:ClientId"];
         googleOptions.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
     });
 
-//Add Facebook Auth
+//Add Facebook Authentication
 builder.Services.AddAuthentication().AddFacebook(facebookOptions =>
     {
         facebookOptions.AppId = builder.Configuration["Authentication:Facebook:AppId"];
