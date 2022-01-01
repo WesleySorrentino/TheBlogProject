@@ -1,8 +1,10 @@
 ﻿@page
 @model ExternalLoginsModel
 @{
-    ViewData["Title"] = "Manage your external logins";
+    string manageText = "Manage your external logins";
+    ViewData["Title"] = manageText;
     ViewData["ActivePage"] = ManageNavPages.ExternalLogins;
+    ViewData["MainText"] = manageText;
 }
 
 <partial name="_StatusMessage" for="StatusMessage" />
