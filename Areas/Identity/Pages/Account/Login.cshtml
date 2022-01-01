@@ -3,7 +3,6 @@
 
 @{
     ViewData["Title"] = "Log in";
-    ViewData["MainText"] = "Log in";
 }
 
 <h1>@ViewData["Title"]</h1>
@@ -70,7 +69,7 @@
                             <p>
                                 @foreach (var provider in Model.ExternalLogins)
                                 {
-                                    <button type="submit" class="btn btn-primary" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account"><i class="fab fa-@provider.DisplayName.ToLower()"></i> @provider.DisplayName</button>
+                                    <button type="submit" class="btn btn-primary" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account">@provider.DisplayName</button>
                                 }
                             </p>
                         </div>
@@ -83,27 +82,4 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
-
-    
-@*<script>
-  window.fbAsyncInit = function() {
-    FB.init({
-      appId      : '{app-id}',
-      cookie     : true,
-      xfbml      : true,
-      version    : '{api-version}'
-    });
-      
-    FB.AppEvents.logPageView();   
-      
-  };
-
-  (function(d, s, id){
-     var js, fjs = d.getElementsByTagName(s)[0];
-     if (d.getElementById(id)) {return;}
-     js = d.createElement(s); js.id = id;
-     js.src = "https://connect.facebook.net/en_US/sdk.js";
-     fjs.parentNode.insertBefore(js, fjs);
-   }(document, 'script', 'facebook-jssdk'));
-</script>*@
 }
