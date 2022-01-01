@@ -31,11 +31,11 @@ builder.Services.AddScoped<IImageService, BasicImageService>();
 
 builder.Services.AddScoped<ISlugService, BasicSlugService>();
 
-//builder.Services.AddAuthentication().AddGoogle(googleOptions =>
-//    {
-//        googleOptions.ClientId = builder.Configuration["Authentication:Google:ClientId"];
-//        googleOptions.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
-//    });
+builder.Services.AddAuthentication().AddGoogle(googleOptions =>
+    {
+        googleOptions.ClientId = builder.Configuration["Authentication:Google:ClientId"];
+        googleOptions.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
+    });
 
 var app = builder.Build();
 
