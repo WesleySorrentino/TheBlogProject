@@ -1,7 +1,9 @@
 ﻿@page
 @model PersonalDataModel
 @{
-    ViewData["Title"] = "Personal Data";
+    string personalText = "Manage Personal Data";
+    ViewData["Title"] = personalText;
+    ViewData["MainText"] = personalText;
     ViewData["ActivePage"] = ManageNavPages.PersonalData;
 }
 
