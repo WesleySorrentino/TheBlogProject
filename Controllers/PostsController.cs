@@ -47,7 +47,7 @@ namespace TheBlogProject.Controllers
 
             var posts = _blogSearchService.Search(searchTerm);
 
-            ViewData["HeaderImage"] = "/assets/img/home-bg.jpg";
+            ViewData["HeaderImage"] = "/img/home-bg.jpg";
 
             return View(await posts.ToPagedListAsync(pageNumber, pageSize));
         }
@@ -67,7 +67,10 @@ namespace TheBlogProject.Controllers
                 .OrderByDescending(p => p.Created)
                 .ToPagedListAsync(pageNumber, pageSize);
 
-            ViewData["HeaderImage"] = "/assets/img/home-bg.jpg";
+            //Get BLog Image
+            var blogImage = await _context.Blogs.Where(b => b.Id == id).FirstOrDefaultAsync();
+            ViewData["HeaderImage"] = _imageService.DecodeImage(blogImage.ImageData, blogImage.ContentType);
+         
             ViewData["MainText"] = "Posts";
 
             return View(posts);
