@@ -71,6 +71,7 @@ header.masthead .site-heading {
 #img {
     height: 300px;
     width: 100%;
+    background-repeat: repeat;
     object-fit: cover;
 }
 
