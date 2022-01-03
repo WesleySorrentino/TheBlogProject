@@ -25,51 +25,60 @@
         </div>
     }
 
-    @foreach (var post in Model)
-    {
-        //Is the logged in user the Author of this post??
-        var isAuthor = false;
-        if (User.Identity.IsAuthenticated)
+        @if(Model.Count() <= 0)
         {
-            isAuthor = isAuthor && (post.BlogUserId == userManager.GetUserId(User));
-        }
-
-        <div class="col-sm-12 col-md-6 col-lg-4 mt-3">
-            <div class="card border-dark">
-                <div class="card-body text-center">
-                    <img class="card-img-top" id="img" src="@imageService.DecodeImage(post.ImageData,  post.ContentType)" />
-                    <div class="bg-warning">
-                        <hr class="card-hr" />
-                        <h5 class="card-title p-1">@post.Title</h5>
-                        <hr class="card-hr" />
-                    </div>
-                    <div>
-                        <p class="card-text">@post.Abstract</p>
-                    </div>
-
-                    <br />
-                    <div class="text-center">
-                        <a class="btn btn-dark btn-sm btn-block mb-2" asp-action="Details" asp-controller="Posts" asp-route-slug="@post.Slug">Read More</a>
-                    </div>
-
-                    @if (User.IsInRole(BlogRole.Administrator.ToString()) || isAuthor)
-                    {
-                        <div class=row>
-
-                            <div class="text-center col-6">
-                                <a class="btn btn-success btn-sm btn-block border-dark" asp-action="Edit" asp-controller="Posts" asp-route-id="@post.Id">Edit Post</a>
-                            </div>
-
-                            <div class="text-center col-6">
-                                <a class="btn btn-danger btn-sm btn-block " asp-action="Delete" asp-controller="Posts" asp-route-id="@post.Id">Delete Post</a>
-                            </div>
-                        </div>
-                    }
-                </div>
+            <div>
+                <h1 class="display-3 text-center">
+                    Blog posts coming soon!
+                </h1>
             </div>
+        } else
+        {            
+            @foreach (var post in Model)
+            {        
+                //Is the logged in user the Author of this post??
+                var isAuthor = false;
+                if (User.Identity.IsAuthenticated)
+                {
+                    isAuthor = isAuthor && (post.BlogUserId == userManager.GetUserId(User));
+                }
 
-        </div>        
-    }
+                <div class="col-sm-12 col-md-6 col-lg-4 mt-3">
+                    <div class="card border-dark">
+                        <div class="card-body text-center">
+                            <img class="card-img-top" id="img" src="@imageService.DecodeImage(post.ImageData,  post.ContentType)" />
+                            <div class="bg-warning">
+                                <hr class="card-hr" />
+                                <h5 class="card-title p-1">@post.Title</h5>
+                                <hr class="card-hr" />
+                            </div>
+                            <div>
+                                <p class="card-text">@post.Abstract</p>
+                            </div>
+
+                            <br />
+                            <div class="text-center">
+                                <a class="btn btn-dark btn-sm btn-block mb-2" asp-action="Details" asp-controller="Posts" asp-route-slug="@post.Slug">Read More</a>
+                            </div>
+
+                            @if (User.IsInRole(BlogRole.Administrator.ToString()) || isAuthor)
+                            {
+                                <div class=row>
+
+                                    <div class="text-center col-6">
+                                        <a class="btn btn-success btn-sm btn-block border-dark" asp-action="Edit" asp-controller="Posts" asp-route-id="@post.Id">Edit Post</a>
+                                    </div>
+
+                                    <div class="text-center col-6">
+                                        <a class="btn btn-danger btn-sm btn-block " asp-action="Delete" asp-controller="Posts" asp-route-id="@post.Id">Delete Post</a>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>        
+            }
+        }
 </div>
 </div>
 
