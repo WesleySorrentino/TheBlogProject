@@ -1,9 +1,10 @@
 ﻿@model ErrorViewModel
 @{
     ViewData["Title"] = "Error";
+    ViewData["MainText"] = "Error";
 }
 
-<h1 class="text-danger">Error.</h1>
+@*<h1 class="text-danger">Error.</h1>
 <h2 class="text-danger">An error occurred while processing your request.</h2>
 
 @if (Model?.ShowRequestId ?? false)
@@ -22,4 +23,14 @@
     It can result in displaying sensitive information from exceptions to end users.
     For local debugging, enable the <strong>Development</strong> environment by setting the <strong>ASPNETCORE_ENVIRONMENT</strong> environment variable to <strong>Development</strong>
     and restarting the app.
-</p>
+</p>*@
+
+<div class="container">
+    <div class="row">
+        <div class="col-12 text-center my-5">
+            <h1 class="display-1">404</h1>
+            <h4>The page you are looking for might have been removed had its name changed or is temporarily unavailable.</h4>
+            <h5><a asp-controller="Home" asp-action="Index">Homepage</a></h5>
+        </div>
+    </div>
+</div>

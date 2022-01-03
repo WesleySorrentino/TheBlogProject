@@ -49,6 +49,8 @@ namespace TheBlogProject.Controllers
 
         public IActionResult Contact()
         {
+            ViewData["HeaderImage"] = "/img/contact-bg.jpg";
+
             return View();
         }
 
